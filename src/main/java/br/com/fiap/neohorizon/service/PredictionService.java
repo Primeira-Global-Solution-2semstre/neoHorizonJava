@@ -94,4 +94,8 @@ public class PredictionService {
         Prediction predictionSegura = new Prediction();
         return predictionSegura;
     }
+
+    public List<Prediction> findAllPredictions() {
+        return predictionRepository.findAll();
+    }
 }

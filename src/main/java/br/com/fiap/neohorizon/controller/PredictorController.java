@@ -3,10 +3,9 @@ package br.com.fiap.neohorizon.controller;
 import br.com.fiap.neohorizon.dto.PredictionInputDto;
 import br.com.fiap.neohorizon.model.Prediction;
 import br.com.fiap.neohorizon.service.PredictionService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/predict")
@@ -18,9 +17,13 @@ public class PredictorController {
         this.predictionService = predictionService;
     }
 
-    @GetMapping()
+    @PostMapping()
     public Prediction generatePrediction(@RequestBody PredictionInputDto predictionInputDTO){
         return predictionService.generatePrediction(predictionInputDTO.getPeriodo(), predictionInputDTO.getSpaceObjectTag());
     }
 
+    @GetMapping()
+    public List<Prediction> findAll(){
+        return predictionService.findAllPredictions();
+    }
 }
