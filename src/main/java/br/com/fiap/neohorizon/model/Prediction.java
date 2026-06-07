@@ -1,5 +1,6 @@
 package br.com.fiap.neohorizon.model;
 
+import br.com.fiap.neohorizon.dto.PredictionInputDto;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
