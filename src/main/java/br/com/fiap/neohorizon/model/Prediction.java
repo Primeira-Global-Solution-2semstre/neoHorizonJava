@@ -1,11 +1,26 @@
 package br.com.fiap.neohorizon.model;
 
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Prediction {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+
     boolean isGoingToCollide;
     Long timeUntilImpact;
+
+    @ManyToMany
+    @JoinTable(
+            name = "prediction_space_objetos",
+            joinColumns = @JoinColumn(name = "prediction_id"),
+            inverseJoinColumns = @JoinColumn(name = "space_objeto_id")
+    )
     List<SpaceObjeto> objetosEnvolvidosNoImpacto = new ArrayList<>();
 
     public Prediction() {

@@ -4,6 +4,7 @@ import br.com.fiap.neohorizon.model.Prediction;
 import br.com.fiap.neohorizon.model.SpaceObjeto;
 import br.com.fiap.neohorizon.model.Vector3D;
 import br.com.fiap.neohorizon.repository.ObjetoRepository;
+import br.com.fiap.neohorizon.repository.PredictionRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,9 +14,11 @@ public class PredictionService {
 
     private static final double COLLISION_DISTANCE = 67;
     private final ObjetoRepository objetoRepository;
+    private final PredictionRepository predictionRepository;
 
-    public PredictionService(ObjetoRepository objetoRepository) {
+    public PredictionService(ObjetoRepository objetoRepository, PredictionRepository predictionRepository) {
         this.objetoRepository = objetoRepository;
+        this.predictionRepository = predictionRepository;
     }
 
     public Prediction generatePrediction(Long periodo, String spaceObjectTag) {
@@ -24,6 +27,7 @@ public class PredictionService {
 
     public Prediction generatePrediction(Long periodo, String spaceObjectTag, Long increase) {
          Prediction prediction = updatePositions(periodo, spaceObjectTag, increase);
+         predictionRepository.save(prediction);
          return prediction;
     }
 
