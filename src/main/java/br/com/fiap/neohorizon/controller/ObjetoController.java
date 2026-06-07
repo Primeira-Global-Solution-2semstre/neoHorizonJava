@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,11 +40,15 @@ public class ObjetoController {
             @ApiResponse(responseCode = "404", description = "Objeto não encontrado", content = @Content),
             @ApiResponse(responseCode = "400", description = "ID inválido fornecido", content = @Content)
     })
-    public EntityModel<SpaceObjeto> getObjeto(
+    public ResponseEntity<EntityModel<SpaceObjeto>>getObjeto(
             @Parameter(description = "ID do objeto que será recuperado", required = true, example = "1")
             @RequestParam Long id){
-        SpaceObjeto spaceObjeto = objetoService.getObjeto(id);
-        return assembler.toModel(spaceObjeto);
+        try {
+            SpaceObjeto spaceObjeto = objetoService.getObjeto(id);
+            return ResponseEntity.ok(assembler.toModel(spaceObjeto));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping()
@@ -55,12 +60,15 @@ public class ObjetoController {
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content),
             @ApiResponse(responseCode = "409", description = "Objeto já existe no sistema", content = @Content)
     })
-    public EntityModel<SpaceObjeto> addObjeto(
+    public ResponseEntity<EntityModel<SpaceObjeto>> addObjeto(
             @Parameter(description = "Objeto a ser criado", required = true)
             @RequestBody SpaceObjeto objeto){
-        return assembler.toModel(
-                objetoService.postObjeto(objeto)
-        );
+        try {
+            SpaceObjeto createdObjeto = objetoService.postObjeto(objeto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(assembler.toModel(createdObjeto));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @PutMapping()
@@ -72,13 +80,15 @@ public class ObjetoController {
             @ApiResponse(responseCode = "404", description = "Objeto não encontrado", content = @Content),
             @ApiResponse(responseCode = "400", description = "Dados de entrada inválidos", content = @Content)
     })
-    public EntityModel<SpaceObjeto> updateObjeto( @Parameter(description = "Objeto atualizado", required = true)
+    public ResponseEntity<EntityModel<SpaceObjeto>> updateObjeto( @Parameter(description = "Objeto atualizado", required = true)
                                                       @RequestBody SpaceObjeto objeto)
             throws ClassNotFoundException {
-
-        return assembler.toModel(
-                objetoService.putObjeto(objeto)
-        );
+        try {
+            SpaceObjeto updatedObjeto = objetoService.putObjeto(objeto);
+            return ResponseEntity.ok(assembler.toModel(updatedObjeto));
+        } catch (ClassNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping()
@@ -91,8 +101,12 @@ public class ObjetoController {
     })
     public ResponseEntity<Void> deleteObjeto(@Parameter(description = "ID do objeto que será excluído", required = true, example = "1")
                                                  @RequestParam Long id){
-        objetoService.deleteObjeto(id);
-        return ResponseEntity.noContent().build();
+        try {
+            objetoService.deleteObjeto(id);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
     }
 }
 
