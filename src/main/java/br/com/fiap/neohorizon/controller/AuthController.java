@@ -40,8 +40,6 @@ public class AuthController {
     public LoginResponse login(
             @RequestBody LoginRequest request) {
 
-        // Replace with DB validation later
-
         if ("admin".equals(request.getUsername())
                 && "1234".equals(request.getPassword())) {
 
