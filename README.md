@@ -7,6 +7,8 @@ https://youtu.be/M_Y0cl_03Mo
 Link da aplicação hospedada: 
 https://neohorizonjava.onrender.com
 
+Link do pitch:
+https://youtu.be/huuaQSYgBt4
 
 ## Sobre o Projeto
 
